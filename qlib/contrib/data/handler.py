@@ -153,6 +153,18 @@ class Alpha158(DataHandlerLP):
         process_type=DataHandlerLP.PTYPE_A,
         filter_pipe=None,
         inst_processors=None,
+        
+        ## YUYUAN WANG: modify feature_config file ###
+        ## add ADARNN with Alpha158 all fields (in **feature_config** item)
+        feature_config = {
+            "kbar": {},
+            "price": {
+                "windows": [0],
+                "feature": ["OPEN", "HIGH", "LOW", "VWAP"],
+            },
+            "rolling": {},
+        }
+        
         **kwargs
     ):
         infer_processors = check_transform_proc(infer_processors, fit_start_time, fit_end_time)
@@ -162,7 +174,7 @@ class Alpha158(DataHandlerLP):
             "class": "QlibDataLoader",
             "kwargs": {
                 "config": {
-                    "feature": self.get_feature_config(),
+                    "feature": self.get_feature_config(feature_config),
                     "label": kwargs.pop("label", self.get_label_config()),
                 },
                 "filter_pipe": filter_pipe,
@@ -181,16 +193,8 @@ class Alpha158(DataHandlerLP):
             **kwargs
         )
 
-    def get_feature_config(self):
-        conf = {
-            "kbar": {},
-            "price": {
-                "windows": [0],
-                "feature": ["OPEN", "HIGH", "LOW", "VWAP"],
-            },
-            "rolling": {},
-        }
-        return self.parse_config_to_fields(conf)
+    def get_feature_config(self, feature_config):
+        return self.parse_config_to_fields(feature_config)
 
     def get_label_config(self):
         return ["Ref($close, -2)/Ref($close, -1) - 1"], ["LABEL0"]
