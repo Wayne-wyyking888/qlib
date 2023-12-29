@@ -224,7 +224,7 @@ class Alpha158(DataHandlerLP):
         """
         fields = []
         names = []
-        if "kbar" in config:
+        if "kbar" in config: # finshed
             # kbar all features
             kbar_pool = {
                 "KMID": "($close-$open)/$open",
@@ -243,9 +243,13 @@ class Alpha158(DataHandlerLP):
                 if _ == "KMID2": fields += ["(Ref($close, %d)-Ref($open, %d))/(Ref($high, %d)-Ref($low, %d)+1e-12)" % (d, d, d, d) if d != 0 else kbar_pool[_] for d in config['windows']]
                 if _ == "KUP": fields += ["(Ref($high, %d)-Greater(Ref($open, %d), Ref($close, %d)))/Ref($open, %d)" % (d, d, d, d) if d != 0 else kbar_pool[_] for d in config['windows']] 
                 if _ == "KUP2": fields += ["(Ref($high, %d)-Greater(Ref($open, %d), Ref($close, %d)))/(Ref($high, %d)-Ref($low, %d)+1e-12)" % (d, d, d, d, d) if d != 0 else kbar_pool[_] for d in config['windows']]  
-                names += d_
+                if _ == "KLOW": fields += ["(Less(Ref($open, %d), Ref($close, %d)) - Ref($low, %d))/Ref($open, %d)" % (d, d, d, d) if d != 0 else kbar_pool[_] for d in config['windows']] 
+                if _ == "KLOW2": fields += ["(Less(Ref($open, %d), Ref($close, %d)) - Ref($low, %d))/(Ref($high, %d)-Ref($low, %d)+1e-12)" % (d, d, d, d, d) if d != 0 else kbar_pool[_] for d in config['windows']]  
+                if _ == "KSFT": fields += ["(2*Ref($close, %d) - Ref($high, %d) - Ref($low, %d))/Ref($open, %d)" % (d, d, d, d) if d != 0 else kbar_pool[_] for d in config['windows']] 
+                if _ == "KSFT2": fields += ["(2*Ref($close, %d) - Ref($high, %d) - Ref($low, %d))/(Ref($high, %d)-Ref($low, %d)+1e-12)" % (d, d, d, d, d) if d != 0 else kbar_pool[_] for d in config['windows']]  
+                
 
-        if "price" in config:
+        if "price" in config: # begin
             windows = config["price"].get("windows", range(5))
             feature = config["price"].get("feature", ["OPEN", "HIGH", "LOW", "CLOSE", "VWAP"])
             for field in feature:
