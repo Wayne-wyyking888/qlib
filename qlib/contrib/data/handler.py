@@ -157,7 +157,7 @@ class Alpha158(DataHandlerLP):
         ## YUYUAN WANG: modify feature_config file ###
         ## add ADARNN with Alpha158 all fields (in **feature_config** item)
         feature_config = {
-            'window': [0,1,2,3,4],
+            'windows': [0,1,2,3,4],
             'kbar': [], # whether to use some hard-code kbar features
             # whether to use raw price features
             'price': ['OPEN', 'HIGH', 'LOW'], # which price field (ratio) to use
@@ -208,7 +208,7 @@ class Alpha158(DataHandlerLP):
         """create factors from config
 
         config = {
-            'window': [0,1,2,3,4],
+            'windows': [0,1,2,3,4],
 
             'kbar': [], # whether to use some hard-code kbar features (names)
             # whether to use raw price features
@@ -236,7 +236,10 @@ class Alpha158(DataHandlerLP):
                 "KLOW2": "(Less($open, $close)-$low)/($high-$low+1e-12)",
                 "KSFT": "(2*$close-$high-$low)/$open",
                 "KSFT2": "(2*$close-$high-$low)/($high-$low+1e-12)"}
-            for d_ in config['kbar']:
+            for _ in config['kbar']:
+                if _ == "KMID": 
+                    fields += ["(Ref($close, %d)-Ref($open, %d))/Ref($open, %d)" % d if d != 0 else kbar_pool[_] for d in config['windows']]
+                    names += [_ + '_' + str(d) for d in config['windows']]
                 fields += kbar_pool[d_]
                 names += d_
 
