@@ -157,7 +157,7 @@ class Alpha158(DataHandlerLP):
         ## YUYUAN WANG: modify feature_config file ###
         ## add ADARNN with Alpha158 all fields (in **feature_config** item)
         feature_config = {
-            'windows': [0,1,2,3,4],
+            'windows': [0,1,2,3,4], # past time windows
             'kbar': [], # whether to use some hard-code kbar features
             # whether to use raw price features
             'price': ['OPEN', 'HIGH', 'LOW'], # which price field (ratio) to use
@@ -208,7 +208,7 @@ class Alpha158(DataHandlerLP):
         """create factors from config
 
         config = {
-            'windows': [0,1,2,3,4],
+            'windows': [0,1,2,3,4],  #
 
             'kbar': [], # whether to use some hard-code kbar features (names)
             # whether to use raw price features
@@ -237,10 +237,12 @@ class Alpha158(DataHandlerLP):
                 "KSFT": "(2*$close-$high-$low)/$open",
                 "KSFT2": "(2*$close-$high-$low)/($high-$low+1e-12)"}
             for _ in config['kbar']:
-                if _ == "KMID": 
-                    fields += ["(Ref($close, %d)-Ref($open, %d))/Ref($open, %d)" % d if d != 0 else kbar_pool[_] for d in config['windows']]
-                    names += [_ + '_' + str(d) for d in config['windows']]
-                fields += kbar_pool[d_]
+                names += [_ + '_' + str(d) for d in config['windows']]
+                if _ == "KMID": fields += ["(Ref($close, %d)-Ref($open, %d))/Ref($open, %d)" % (d, d, d) if d != 0 else kbar_pool[_] for d in config['windows']]   
+                if _ == "KLEN": fields += ["(Ref($high, %d)-Ref($low, %d))/Ref($open, %d)" % (d, d, d) if d != 0 else kbar_pool[_] for d in config['windows']]
+                if _ == "KMID2": fields += ["(Ref($close, %d)-Ref($open, %d))/(Ref($high, %d)-Ref($low, %d)+1e-12)" % (d, d, d, d) if d != 0 else kbar_pool[_] for d in config['windows']]
+                if _ == "KUP": fields += ["(Ref($high, %d)-Greater(Ref($open, %d), Ref($close, %d)))/Ref($open, %d)" % (d, d, d, d) if d != 0 else kbar_pool[_] for d in config['windows']] 
+                if _ == "KUP2": fields += ["(Ref($high, %d)-Greater(Ref($open, %d), Ref($close, %d)))/(Ref($high, %d)-Ref($low, %d)+1e-12)" % (d, d, d, d, d) if d != 0 else kbar_pool[_] for d in config['windows']]  
                 names += d_
 
         if "price" in config:
