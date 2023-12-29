@@ -157,12 +157,16 @@ class Alpha158(DataHandlerLP):
         ## YUYUAN WANG: modify feature_config file ###
         ## add ADARNN with Alpha158 all fields (in **feature_config** item)
         feature_config = {
-            "kbar": {},
-            "price": {
-                "windows": [0],
-                "feature": ["OPEN", "HIGH", "LOW", "VWAP"],
-            },
-            "rolling": {},
+            'window': [0,1,2,3,4],
+            'kbar': [], # whether to use some hard-code kbar features
+            # whether to use raw price features
+            'price': ['OPEN', 'HIGH', 'LOW'], # which price field (ratio) to use
+            # whether to use raw volume (ratio) features
+            'volume': [],
+             # whether to use rolling operator based features
+            'rolling': [],
+             # additional features to be used; must have the same window size
+            'additional': []       
         }
         
         **kwargs
@@ -204,47 +208,38 @@ class Alpha158(DataHandlerLP):
         """create factors from config
 
         config = {
-            'kbar': {}, # whether to use some hard-code kbar features
-            'price': { # whether to use raw price features
-                'windows': [0, 1, 2, 3, 4], # use price at n days ago
-                'feature': ['OPEN', 'HIGH', 'LOW'] # which price field to use
-            },
-            'volume': { # whether to use raw volume features
-                'windows': [0, 1, 2, 3, 4], # use volume at n days ago
-            },
-            'rolling': { # whether to use rolling operator based features
-                'windows': [5, 10, 20, 30, 60], # rolling windows size
-                'include': ['ROC', 'MA', 'STD'], # rolling operator to use
-                #if include is None we will use default operators
-                'exclude': ['RANK'], # rolling operator not to use
-            }
+            'window': [0,1,2,3,4],
+
+            'kbar': [], # whether to use some hard-code kbar features (names)
+            # whether to use raw price features
+            'price': ['OPEN', 'HIGH', 'LOW'], # which price field (ratio) to use
+            # whether to use raw volume (ratio) features
+            'volume': [],
+             # whether to use rolling operator based features
+            'rolling': [],
+             # additional features to be used; must have the same window size
+            'additional': []
+                
         }
         """
         fields = []
         names = []
         if "kbar" in config:
-            fields += [
-                "($close-$open)/$open",
-                "($high-$low)/$open",
-                "($close-$open)/($high-$low+1e-12)",
-                "($high-Greater($open, $close))/$open",
-                "($high-Greater($open, $close))/($high-$low+1e-12)",
-                "(Less($open, $close)-$low)/$open",
-                "(Less($open, $close)-$low)/($high-$low+1e-12)",
-                "(2*$close-$high-$low)/$open",
-                "(2*$close-$high-$low)/($high-$low+1e-12)",
-            ]
-            names += [
-                "KMID",
-                "KLEN",
-                "KMID2",
-                "KUP",
-                "KUP2",
-                "KLOW",
-                "KLOW2",
-                "KSFT",
-                "KSFT2",
-            ]
+            # kbar all features
+            kbar_pool = {
+                "KMID": "($close-$open)/$open",
+                "KLEN": "($high-$low)/$open",
+                "KMID2": "($close-$open)/($high-$low+1e-12)",
+                "KUP": "($high-Greater($open, $close))/$open",
+                "KUP2": "($high-Greater($open, $close))/($high-$low+1e-12)",
+                "KLOW": "(Less($open, $close)-$low)/$open",
+                "KLOW2": "(Less($open, $close)-$low)/($high-$low+1e-12)",
+                "KSFT": "(2*$close-$high-$low)/$open",
+                "KSFT2": "(2*$close-$high-$low)/($high-$low+1e-12)"}
+            for d_ in config['kbar']:
+                fields += kbar_pool[d_]
+                names += d_
+
         if "price" in config:
             windows = config["price"].get("windows", range(5))
             feature = config["price"].get("feature", ["OPEN", "HIGH", "LOW", "CLOSE", "VWAP"])
