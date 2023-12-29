@@ -153,6 +153,17 @@ class Alpha158(DataHandlerLP):
         process_type=DataHandlerLP.PTYPE_A,
         filter_pipe=None,
         inst_processors=None,
+        ### FEATURE CONFIG
+        ################## YUYUAN WANG
+        feature_config = {
+            'window': [0,1,2,3,4]
+            "kbar": {},
+            "price": {
+                "windows": [0],
+                "feature": ["OPEN", "HIGH", "LOW", "VWAP"],
+            },
+            "rolling": {},
+        }
         **kwargs
     ):
         infer_processors = check_transform_proc(infer_processors, fit_start_time, fit_end_time)
@@ -180,17 +191,9 @@ class Alpha158(DataHandlerLP):
             process_type=process_type,
             **kwargs
         )
-
-    def get_feature_config(self):
-        conf = {
-            "kbar": {},
-            "price": {
-                "windows": [0],
-                "feature": ["OPEN", "HIGH", "LOW", "VWAP"],
-            },
-            "rolling": {},
-        }
-        return self.parse_config_to_fields(conf)
+## SELF input features
+######################
+    def get_feature_config(self, feature_config): return self.parse_config_to_fields(feature_config)
 
     def get_label_config(self):
         return ["Ref($close, -2)/Ref($close, -1) - 1"], ["LABEL0"]
@@ -200,7 +203,7 @@ class Alpha158(DataHandlerLP):
         """create factors from config
 
         config = {
-            'kbar': {}, # whether to use some hard-code kbar features
+            'kbar': [], # whether to use some hard-code kbar features
             'price': { # whether to use raw price features
                 'windows': [0, 1, 2, 3, 4], # use price at n days ago
                 'feature': ['OPEN', 'HIGH', 'LOW'] # which price field to use
