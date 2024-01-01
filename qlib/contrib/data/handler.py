@@ -157,16 +157,21 @@ class Alpha158(DataHandlerLP):
         ## YUYUAN WANG: modify feature_config file ###
         ## add ADARNN with Alpha158 all fields (in **feature_config** item)
         feature_config = {
-            'windows': [0,1,2,3,4], # past time windows
-            'kbar': [], # whether to use some hard-code kbar features
+            'window.size' : 5, # window size by default
+            'kbar': {'windows': [0,1,2,3,4],
+                     'features': []}, # whether to use some hard-code kbar features
             # whether to use raw price features
-            'price': ['OPEN', 'HIGH', 'LOW'], # which price field (ratio) to use
+            'price': {'windows': [0,1,2,3,4],
+                      'features': ['OPEN', 'HIGH', 'LOW']}, # which price field (ratio) to use
             # whether to use raw volume (ratio) features (Yes/No)
-            'volume': 'Yes',
+            'volume': {'windows': [0,1,2,3,4]},
              # whether to use rolling operator based features
-            'rolling': [],
+            # window should not include 0 !!
+            'rolling': {'windows': [5, 10, 20, 30, 60],
+                        'features': []},
              # additional features to be used; must have the same window size
-            'additional': []       
+            'additional': {'windows': [0,1,2,3,4],
+                           'features': []}       
         }
         
         **kwargs
@@ -208,18 +213,21 @@ class Alpha158(DataHandlerLP):
         """create factors from config
 
         config = {
-            'windows': [0,1,2,3,4],  #
-
-            'kbar': [], # whether to use some hard-code kbar features (names)
+            'window.size' : 5, # window size by default
+            'kbar': {'windows': [0,1,2,3,4],
+                     'features': []}, # whether to use some hard-code kbar features
             # whether to use raw price features
-            'price': ['OPEN', 'HIGH', 'LOW'], # which price field (ratio) to use
-            # whether to use raw volume (ratio) features (if 'volume' in config, then it is used)
-            'volume': 'Yes',
+            'price': {'windows': [0,1,2,3,4],
+                      'features': ['OPEN', 'HIGH', 'LOW']}, # which price field (ratio) to use
+            # whether to use raw volume (ratio) features (Yes/No)
+            'volume': {'windows': [0,1,2,3,4]},
              # whether to use rolling operator based features
-            'rolling': [],
+            # window should not include 0 !!
+            'rolling': {'windows': [5, 10, 20, 30, 60],
+                        'features': []},
              # additional features to be used; must have the same window size
-            'additional': []
-                
+            'additional': {'windows': [0,1,2,3,4],
+                           'features': []}       
         }
         """
         fields = []
