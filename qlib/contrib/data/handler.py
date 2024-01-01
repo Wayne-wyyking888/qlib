@@ -213,7 +213,7 @@ class Alpha158(DataHandlerLP):
             'kbar': [], # whether to use some hard-code kbar features (names)
             # whether to use raw price features
             'price': ['OPEN', 'HIGH', 'LOW'], # which price field (ratio) to use
-            # whether to use raw volume (ratio) features
+            # whether to use raw volume (ratio) features (if 'volume' in config, then it is used)
             'volume': [],
              # whether to use rolling operator based features
             'rolling': [],
@@ -250,16 +250,16 @@ class Alpha158(DataHandlerLP):
                 
 
         if "price" in config: # begin
-            windows = config["price"].get("windows", range(5))
+            windows = config['windows']
             feature = config["price"].get("feature", ["OPEN", "HIGH", "LOW", "CLOSE", "VWAP"])
-            for field in feature:
+            for field in feature: # MUST BE A ratio to the current close
                 field = field.lower()
                 fields += ["Ref($%s, %d)/$close" % (field, d) if d != 0 else "$%s/$close" % field for d in windows]
-                names += [field.upper() + str(d) for d in windows]
-        if "volume" in config:
-            windows = config["volume"].get("windows", range(5))
+                names += [field.upper() + '_' + str(d) for d in windows]
+        if "volume" in config: # volumn ratio
+            windows = config['windows']
             fields += ["Ref($volume, %d)/($volume+1e-12)" % d if d != 0 else "$volume/($volume+1e-12)" for d in windows]
-            names += ["VOLUME" + str(d) for d in windows]
+            names += ["VOLUME" + '_' + str(d) for d in windows]
         if "rolling" in config:
             windows = config["rolling"].get("windows", [5, 10, 20, 30, 60])
             include = config["rolling"].get("include", None)
