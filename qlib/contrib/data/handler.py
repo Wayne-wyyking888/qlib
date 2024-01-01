@@ -256,7 +256,7 @@ class Alpha158(DataHandlerLP):
                 field = field.lower()
                 fields += ["Ref($%s, %d)/$close" % (field, d) if d != 0 else "$%s/$close" % field for d in windows]
                 names += [field.upper() + '_' + str(d) for d in windows]
-        if config["volume"] == 'Yes: # volumn ratio
+        if config["volume"] == 'Yes': # volumn ratio
             windows = config['windows']
             fields += ["Ref($volume, %d)/($volume+1e-12)" % d if d != 0 else "$volume/($volume+1e-12)" for d in windows]
             names += ["VOLUME" + '_' + str(d) for d in windows]
