@@ -161,8 +161,8 @@ class Alpha158(DataHandlerLP):
             'kbar': [], # whether to use some hard-code kbar features
             # whether to use raw price features
             'price': ['OPEN', 'HIGH', 'LOW'], # which price field (ratio) to use
-            # whether to use raw volume (ratio) features
-            'volume': [],
+            # whether to use raw volume (ratio) features (Yes/No)
+            'volume': 'Yes',
              # whether to use rolling operator based features
             'rolling': [],
              # additional features to be used; must have the same window size
@@ -214,7 +214,7 @@ class Alpha158(DataHandlerLP):
             # whether to use raw price features
             'price': ['OPEN', 'HIGH', 'LOW'], # which price field (ratio) to use
             # whether to use raw volume (ratio) features (if 'volume' in config, then it is used)
-            'volume': [],
+            'volume': 'Yes',
              # whether to use rolling operator based features
             'rolling': [],
              # additional features to be used; must have the same window size
@@ -256,7 +256,7 @@ class Alpha158(DataHandlerLP):
                 field = field.lower()
                 fields += ["Ref($%s, %d)/$close" % (field, d) if d != 0 else "$%s/$close" % field for d in windows]
                 names += [field.upper() + '_' + str(d) for d in windows]
-        if "volume" in config: # volumn ratio
+        if config["volume"] == 'Yes: # volumn ratio
             windows = config['windows']
             fields += ["Ref($volume, %d)/($volume+1e-12)" % d if d != 0 else "$volume/($volume+1e-12)" for d in windows]
             names += ["VOLUME" + '_' + str(d) for d in windows]
