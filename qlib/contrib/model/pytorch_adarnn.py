@@ -83,10 +83,13 @@ class ADARNN(Model):
         self.n_splits = n_splits
         self.device = torch.device("cuda:%d" % GPU if torch.cuda.is_available() and GPU >= 0 else "cpu")
         self.seed = seed
+        # dimension of sequence (each feature's window length): d_seq
+        # dimension of features: d_feat
 
         self.logger.info(
             "ADARNN parameters setting:"
-            "\nd_feat : {}"
+            "\nd_feat : {}" # dimension of features
+            "\nd_seq: {}" 
             "\nhidden_size : {}"
             "\nnum_layers : {}"
             "\ndropout : {}"
@@ -97,10 +100,12 @@ class ADARNN(Model):
             "\nearly_stop : {}"
             "\noptimizer : {}"
             "\nloss_type : {}"
+            "\nn_splits: {}"
             "\nvisible_GPU : {}"
             "\nuse_GPU : {}"
             "\nseed : {}".format(
                 d_feat,
+                len_seq,
                 hidden_size,
                 num_layers,
                 dropout,
@@ -111,6 +116,7 @@ class ADARNN(Model):
                 early_stop,
                 optimizer.lower(),
                 loss,
+                n_splits,
                 GPU,
                 self.use_gpu,
                 seed,
