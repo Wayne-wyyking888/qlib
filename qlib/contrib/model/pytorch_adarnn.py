@@ -5,6 +5,7 @@ from torch.utils.data import Dataset, DataLoader
 import copy
 from typing import Text, Union
 
+import math
 import numpy as np
 import pandas as pd
 import torch
@@ -37,7 +38,7 @@ class ADARNN(Model):
 
     def __init__(
         self,
-        d_feat=6,
+        d_feat=6, # dimension of features 
         hidden_size=64,
         num_layers=2,
         dropout=0.0,
@@ -45,7 +46,7 @@ class ADARNN(Model):
         pre_epoch=40,
         dw=0.5,
         loss_type="cosine",
-        len_seq=60,
+        len_seq=60, # dimension of sequence (each feature's window length): d_seq
         len_win=0,
         lr=0.001,
         metric="mse",
@@ -53,7 +54,7 @@ class ADARNN(Model):
         early_stop=20,
         loss="mse",
         optimizer="adam",
-        n_splits=2,
+        n_splits=2, # TDC maximum periods specified
         GPU=0,
         seed=None,
         **_
@@ -88,7 +89,7 @@ class ADARNN(Model):
 
         self.logger.info(
             "ADARNN parameters setting:"
-            "\nd_feat : {}" # dimension of features
+            "\nd_feat : {}" 
             "\nd_seq: {}" 
             "\nhidden_size : {}"
             "\nnum_layers : {}"
@@ -229,7 +230,9 @@ class ADARNN(Model):
         res["icir"] = ic.mean() / ic.std()
         res["ric"] = rank_ic.mean()
         res["ricir"] = rank_ic.mean() / rank_ic.std()
-        res["mse"] = -(pred["label"] - pred["score"]).mean()
+        res["L1_Loss"] = (pred["label"] - pred["score"]).abs().mean() # Yuyuan: L1 loss
+        res['mse'] = ((pred["label"] - pred["score"])**2).mean()
+        res['rmse'] = math.sqrt(res['mse'])
         res["loss"] = res["mse"]
         return res
 
