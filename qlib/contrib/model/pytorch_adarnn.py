@@ -263,7 +263,7 @@ class ADARNN(Model):
         days = df_train.index.get_level_values(level=0).unique()
         train_splits = np.array_split(days, self.n_splits)
         train_splits = [df_train[s[0] : s[-1]] for s in train_splits]
-        train_loader_list = [get_stock_loader(df, self.batch_size) for df in train_splits]
+        train_loader_list = [get_stock_loader(df, self.d_feat, self.len_seq, self.batch_size) for df in train_splits]
 
         save_path = get_or_create_path(save_path)
         stop_steps = 0
@@ -365,8 +365,8 @@ class data_loader(Dataset):
         return len(self.df_feature)
 
 
-def get_stock_loader(df, batch_size, shuffle=True):
-    train_loader = DataLoader(data_loader(df = df, feature_len = self.d_feat, seq_len = self.len_seq), batch_size=batch_size, shuffle=shuffle)
+def get_stock_loader(df, feature_len, seq_len, batch_size, shuffle=True):
+    train_loader = DataLoader(data_loader(df = df, feature_len = feature_len, seq_len = seq_len), batch_size=batch_size, shuffle=shuffle)
     return train_loader
 
 
