@@ -173,7 +173,7 @@ class Alpha158(DataHandlerLP):
             # MUST be a price object!
             'additional': {'windows': [0,1,2,3,4],
                            'features': ["OPEN", "HIGH", "LOW", "CLOSE", "VWAP"]}       
-        }
+        },
         
         **kwargs
     ):
