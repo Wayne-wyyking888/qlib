@@ -84,8 +84,7 @@ class ADARNN(Model):
         self.n_splits = n_splits
         self.device = torch.device("cuda:%d" % GPU if torch.cuda.is_available() and GPU >= 0 else "cpu")
         self.seed = seed
-        # dimension of sequence (each feature's window length): d_seq
-        # dimension of features: d_feat
+
 
         self.logger.info(
             "ADARNN parameters setting:"
@@ -349,12 +348,12 @@ class ADARNN(Model):
 
 
 class data_loader(Dataset):
-    def __init__(self, df):
+    def __init__(self, df, feature_len, seq_len): # Yuyuan: self-defined window size & feature size
         self.df_feature = df["feature"]
         self.df_label_reg = df["label"]
         self.df_index = df.index
         self.df_feature = torch.tensor(
-            self.df_feature.values.reshape(-1, 6, 60).transpose(0, 2, 1), dtype=torch.float32
+            self.df_feature.values.reshape(-1, feature_len, seq_len).transpose(0, 2, 1), dtype=torch.float32
         )
         self.df_label_reg = torch.tensor(self.df_label_reg.values.reshape(-1), dtype=torch.float32)
 
@@ -367,7 +366,7 @@ class data_loader(Dataset):
 
 
 def get_stock_loader(df, batch_size, shuffle=True):
-    train_loader = DataLoader(data_loader(df), batch_size=batch_size, shuffle=shuffle)
+    train_loader = DataLoader(data_loader(df = df, feature_len = self.d_feat, seq_len = self.len_seq), batch_size=batch_size, shuffle=shuffle)
     return train_loader
 
 
