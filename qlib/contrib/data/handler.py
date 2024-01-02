@@ -162,16 +162,17 @@ class Alpha158(DataHandlerLP):
                      'features': []}, # whether to use some hard-code kbar features
             # whether to use raw price features
             'price': {'windows': [0,1,2,3,4],
-                      'features': ['OPEN', 'HIGH', 'LOW']}, # which price field (ratio) to use
-            # whether to use raw volume (ratio) features (Yes/No)
+                      'features': ["OPEN", "HIGH", "LOW", "CLOSE", "VWAP"]}, # which price field (ratio) to use
+            # whether to use raw volume (ratio) features 
             'volume': {'windows': [0,1,2,3,4]},
              # whether to use rolling operator based features
             # window should not include 0 !!
             'rolling': {'windows': [5, 10, 20, 30, 60],
                         'features': []},
              # additional features to be used; must have the same window size
+            # MUST be a price object!
             'additional': {'windows': [0,1,2,3,4],
-                           'features': []}       
+                           'features': ["OPEN", "HIGH", "LOW", "CLOSE", "VWAP"]}       
         }
         
         **kwargs
@@ -218,7 +219,7 @@ class Alpha158(DataHandlerLP):
                      'features': []}, # whether to use some hard-code kbar features
             # whether to use raw price features
             'price': {'windows': [0,1,2,3,4],
-                      'features': ['OPEN', 'HIGH', 'LOW']}, # which price field (ratio) to use
+                      'features': ["OPEN", "HIGH", "LOW", "CLOSE", "VWAP"]}, # which price field (ratio) to use
             # whether to use raw volume (ratio) features (Yes/No)
             'volume': {'windows': [0,1,2,3,4]},
              # whether to use rolling operator based features
@@ -226,8 +227,9 @@ class Alpha158(DataHandlerLP):
             'rolling': {'windows': [5, 10, 20, 30, 60],
                         'features': []},
              # additional features to be used; must have the same window size
+             # MUST be a price object!
             'additional': {'windows': [0,1,2,3,4],
-                           'features': []}       
+                           'features': ["OPEN", "HIGH", "LOW", "CLOSE", "VWAP"]}       
         }
         """
         fields = []
@@ -439,7 +441,13 @@ class Alpha158(DataHandlerLP):
                     for d in windows
                 ]
                 names += ["VSUMD_%d" % d for d in windows]
-        if 'addtional' in config: # begin
+        if 'additional' in config: # MUST be a price object!
+            windows = config['additional'].get("windows", [0,1,2,3,4])
+            feature = config["additional"].get("features", ["OPEN", "HIGH", "LOW", "CLOSE", "VWAP"])
+            for field in feature: # WITH UNITS!
+                field = field.lower()
+                fields += ["Ref($%s, %d)" % (field, d) if d != 0 else "$%s" % field for d in windows]
+                names += [field.upper() + '_' + str(d) for d in windows]
 
         return fields, names
 
