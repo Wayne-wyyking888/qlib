@@ -54,7 +54,7 @@ class ADARNN(Model):
         early_stop=20,
         loss="mse",
         optimizer="adam",
-        n_splits=2, # TDC maximum periods specified
+        n_splits=2, 
         GPU=0,
         seed=None,
         **_
