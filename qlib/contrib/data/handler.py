@@ -447,7 +447,7 @@ class Alpha158(DataHandlerLP):
             for field in feature: # WITH UNITS!
                 field = field.lower()
                 fields += ["Ref($%s, %d)" % (field, d) if d != 0 else "$%s" % field for d in windows]
-                names += [field.upper() + '_' + str(d) for d in windows]
+                names += [field.upper() + '_' + str(d) + 'pure' for d in windows]
 
         return fields, names
 
