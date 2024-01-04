@@ -47,15 +47,15 @@ data_handler_config = {
                               "RESI", "RSV", "CNTN", "SUMD", "VSUMD"]},
             #  # additional features to be used; must have the same window size
             # # MUST be a price object! (name will be, eg, OPEN_3_pure, 'pure' is for original feature without ratios)
-            # 'additional': {'windows': [i for i in range(60)],
-            #                'features': ["OPEN", "HIGH", "LOW", "CLOSE", 'VWAP']}
+            'additional': {'windows': [i for i in range(60)],
+                           'features': ["OPEN", "HIGH", "LOW", "CLOSE", 'VWAP']}
     },
     ##### ************************* #####
     ## stock pools & specified label
     "instruments": ['SH600297', 'SH600332', 'SH600346', 'SH600369', 'SH600390',
         'SH600415', 'SH600482', 'SH600498', 'SH600519', 'SH600547',
        'SH600570', 'SH600588', 'SH600655', 'SH600674', 'SH600703'],
-    "label": ["Ref($close, -2) / Ref($close, -1) - 1"], # response: 后1天收益率 (BENCHMARK)
+    "label": ["Ref($close, -2) / Ref($close, -1) - 1"], # response: return in the next day (BENCHMARK)
     ## Inference processer
     'infer_processors':
     [
