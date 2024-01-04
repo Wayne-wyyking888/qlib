@@ -13,13 +13,13 @@
 
 1. Modify **'../qlib/contrib/data/handler.py'** File and **'../qlib/contrib/model/pytorch_adarnn.py'** file.
    
-   In one of the datahandler classes, ```class Alpha158(DataHandlerLP):``` in ```handler.py```, we add an input argument ``` feature_config ``` which supports self-specified features as inputs. And correspondingly, in ```pytorch_adarnn.py```, we directly add an option for 
+   In one of the datahandler classes, ```class Alpha158(DataHandlerLP):``` in ```handler.py```, we add an input argument ``` feature_config ``` which supports self-specified features as inputs. And correspondingly, in ```pytorch_adarnn.py```, we directly add an option for the input of data sequence length ```'len_seq': xxx'``` which can be specified in ```task``` in the following example.
    
     For example, ``` kbar ```, **hard-code kbar features** (```"KMID2", "KSFT", "KLOW2"``` etc) and ``` rolling ```,  **rolling operator based features** (```"QTLU", "CORR", "VSTD", "VMA", "BETA"``` etc) can be specified by the users themselves. Note that the user must specify the corresponding ```windows``` (window length) for each type of features. 
 
    And for some special model classes, such as ```ADARNN```, ```ALSTMN```, the window length must be set as the SAME across all features, but the window itself does not necessarily need to be the same (eg: for ```kbar```, the ```windows = [0,1,2,3,4]```, but for ``` rolling```, the ```windows = [5,15,20,30,50]```. However, for other model classes, such as ```XGBOOST```, ```LIGHTGBM```, both the window length and windows could be different for distinct types of features. 
 
-   One can check https://github.com/Wayne-wyyking888/qlib__ADARNN_modify/blob/main/qlib/contrib/data/handler.py for detailed implementation.
+   One can check https://github.com/Wayne-wyyking888/qlib__ADARNN_modify/blob/main/qlib/contrib/data/handler.py and https://github.com/Wayne-wyyking888/qlib__ADARNN_modify/blob/main/qlib/contrib/model/pytorch_adarnn.py for detailed implementation.
 
 Here is an example of data configuration and model setup for ADARNN model:
 ``` Python
