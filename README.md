@@ -11,9 +11,9 @@
 **Original Github link**: https://github.com/microsoft/qlib \
 **Documentation Qlib**: https://qlib.readthedocs.io/
 
-1. Modify **'../qlib/contrib/data/handler.py'** File.
+1. Modify **'../qlib/contrib/data/handler.py'** File and **qlib/contrib/model/pytorch_adarnn.py** file.
    
-   In one of the datahandler classes, ```class Alpha158(DataHandlerLP):```, we add an input argument ``` feature_config ``` which supports self-specified features as inputs.
+   In one of the datahandler classes, ```class Alpha158(DataHandlerLP):``` in ```handler.py```, we add an input argument ``` feature_config ``` which supports self-specified features as inputs. And correspondingly, in ```pytorch_adarnn.py```, we directly add an option for 
    
     For example, ``` kbar ```, **hard-code kbar features** (```"KMID2", "KSFT", "KLOW2"``` etc) and ``` rolling ```,  **rolling operator based features** (```"QTLU", "CORR", "VSTD", "VMA", "BETA"``` etc) can be specified by the users themselves. Note that the user must specify the corresponding ```windows``` (window length) for each type of features. 
 
