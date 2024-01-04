@@ -8,7 +8,7 @@
 [![Join the chat at https://gitter.im/Microsoft/qlib](https://badges.gitter.im/Microsoft/qlib.svg)](https://gitter.im/Microsoft/qlib?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # **Modification From Original Qlib**
-**Original Github link**: https://github.com/microsoft/qlib 
+**Original Github link**: https://github.com/microsoft/qlib \
 **Documentation Qlib**: https://qlib.readthedocs.io/
 
 1. Modify **'../qlib/contrib/data/handler.py'** File.
