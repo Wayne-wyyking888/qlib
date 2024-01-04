@@ -8,16 +8,16 @@
 [![Join the chat at https://gitter.im/Microsoft/qlib](https://badges.gitter.im/Microsoft/qlib.svg)](https://gitter.im/Microsoft/qlib?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # **Modification From Original Qlib**
-**Original Github link**: https://github.com/microsoft/qlib \
+**Original Github link**: https://github.com/microsoft/qlib 
 **Documentation Qlib**: https://qlib.readthedocs.io/
 
-1. Modify **'../qlib/contrib/data/handler.py'** File.\
+1. Modify **'../qlib/contrib/data/handler.py'** File.
    
-   In one of the datahandler classes, ```class Alpha158(DataHandlerLP):```, we add an input argument ``` feature_config ``` which supports self-specified features as inputs.\
+   In one of the datahandler classes, ```class Alpha158(DataHandlerLP):```, we add an input argument ``` feature_config ``` which supports self-specified features as inputs.
    
-    For example, ``` kbar ```, **hard-code kbar features** (```"KMID2", "KSFT", "KLOW2"``` etc) and ``` rolling ```,  **rolling operator based features** (```"QTLU", "CORR", "VSTD", "VMA", "BETA"``` etc) can be specified by the users themselves. Note that the user must specify the corresponding ```windows``` (window length) for each type of features. \
+    For example, ``` kbar ```, **hard-code kbar features** (```"KMID2", "KSFT", "KLOW2"``` etc) and ``` rolling ```,  **rolling operator based features** (```"QTLU", "CORR", "VSTD", "VMA", "BETA"``` etc) can be specified by the users themselves. Note that the user must specify the corresponding ```windows``` (window length) for each type of features. 
 
-   And for some special model classes, such as ```ADARNN```, ```ALSTMN```, the window length must be set as the SAME across all features, but the window itself does not necessarily need to be the same (eg: for ```kbar```, the ```windows = [0,1,2,3,4]```, but for ``` rolling```, the ```windows = [5,15,20,30,50]```. However, for other model classes, such as ```XGBOOST```, ```LIGHTGBM```, both the window length and windows could be different for distinct types of features. \
+   And for some special model classes, such as ```ADARNN```, ```ALSTMN```, the window length must be set as the SAME across all features, but the window itself does not necessarily need to be the same (eg: for ```kbar```, the ```windows = [0,1,2,3,4]```, but for ``` rolling```, the ```windows = [5,15,20,30,50]```. However, for other model classes, such as ```XGBOOST```, ```LIGHTGBM```, both the window length and windows could be different for distinct types of features. 
 
    One can check https://github.com/Wayne-wyyking888/qlib__ADARNN_modify/blob/main/qlib/contrib/data/handler.py for detailed implementation.
 
