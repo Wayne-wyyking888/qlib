@@ -7,6 +7,117 @@
 [![License](https://img.shields.io/pypi/l/pyqlib)](LICENSE)
 [![Join the chat at https://gitter.im/Microsoft/qlib](https://badges.gitter.im/Microsoft/qlib.svg)](https://gitter.im/Microsoft/qlib?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+# **Modification From Original Qlib**
+**Original Github link**: https://github.com/microsoft/qlib \
+**Documentation Qlib**: https://qlib.readthedocs.io/
+
+1. Modify **'../qlib/contrib/data/handler.py'** File.\
+   
+   In one of the datahandler classes, ```class Alpha158(DataHandlerLP):```, we add an input argument ``` feature_config ``` which supports self-specified features as inputs.\
+   
+    For example, ``` kbar ```, **hard-code kbar features** (```"KMID2", "KSFT", "KLOW2"``` etc) and ``` rolling ```,  **rolling operator based features** (```"QTLU", "CORR", "VSTD", "VMA", "BETA"``` etc) can be specified by the users themselves. Note that the user must specify the corresponding ```windows``` (window length) for each type of features. \
+
+   And for some special model classes, such as ```ADARNN```, ```ALSTMN```, the window length must be set as the SAME across all features, but the window itself does not necessarily need to be the same (eg: for ```kbar```, the ```windows = [0,1,2,3,4]```, but for ``` rolling```, the ```windows = [5,15,20,30,50]```. However, for other model classes, such as ```XGBOOST```, ```LIGHTGBM```, both the window length and windows could be different for distinct types of features. \
+
+   One can check https://github.com/Wayne-wyyking888/qlib__ADARNN_modify/blob/main/qlib/contrib/data/handler.py for detailed implementation.
+
+Here is an example of data configuration and model setup for ADARNN model:
+``` Python
+benchmark = "SH000300"
+data_handler_config = {
+    "start_time": "2017-01-01",
+    "end_time": "2020-09-10",
+    "fit_start_time": "2017-06-01",
+    "fit_end_time": "2018-12-31",
+    ### NEW INPUTS (Our contributions) ###
+    "feature_config" : {
+            'window.size' : 40, # window size by default
+            'kbar': {'windows': [i for i in range(40)],
+                     'features': ["KMID2", "KSFT", "KLOW2", "KUP", "KLEN"]}, # whether to use some hard-code kbar features
+            # whether to use raw price features
+            'price': {'windows': [i for i in range(40)],
+                      'features': ["OPEN", "HIGH", "LOW", "CLOSE", 'VWAP']}, # which price field (ratio) to use
+            # whether to use raw volume (ratio) features
+            'volume': {'windows': [i for i in range(40)]},
+             # whether to use rolling operator based features
+            # window should not include 0 !!
+            'rolling': {'windows': [i for i in range(5,85,2)],
+                        'features': ["QTLU", "CORR", "VSTD", "VMA", "BETA",
+                              "ROC", "MA", "RANK", "IMIN", "IMXD",
+                              "RESI", "RSV", "CNTN", "SUMD", "VSUMD"]},
+            #  # additional features to be used; must have the same window size
+            # # MUST be a price object! (name will be, eg, OPEN_3_pure, 'pure' is for original feature without ratios)
+            # 'additional': {'windows': [i for i in range(60)],
+            #                'features': ["OPEN", "HIGH", "LOW", "CLOSE", 'VWAP']}
+    },
+    ##### ************************* #####
+    ## stock pools & specified label
+    "instruments": ['SH600297', 'SH600332', 'SH600346', 'SH600369', 'SH600390',
+        'SH600415', 'SH600482', 'SH600498', 'SH600519', 'SH600547',
+       'SH600570', 'SH600588', 'SH600655', 'SH600674', 'SH600703'],
+    "label": ["Ref($close, -2) / Ref($close, -1) - 1"], # response: 后1天收益率 (BENCHMARK)
+    ## Inference processer
+    'infer_processors':
+    [
+    {"class": "ProcessInf", "kwargs": {}},
+    {"class": "ZScoreNorm", "kwargs": {}},
+    {"class": "Fillna", "kwargs": {}},
+    ],
+    # learner_processor
+    'learn_processors': [
+    {"class": "DropnaLabel"},
+    {"class": "CSZScoreNorm", "kwargs": {"fields_group": "label"}},
+]
+
+
+} # handle data
+
+task = {
+    "model": {
+        "class": "ADARNN",
+        "module_path": "qlib.contrib.model.pytorch_adarnn",
+        "kwargs": {
+            'd_feat': 26,
+            'len_seq': 40, # fixed sequence length
+            'hidden_size': 64,
+            'num_layers': 3,
+            'dropout': 0.55,
+            'n_epochs': 200,
+            'lr': 1e-3, #
+            'early_stop': 100,
+            'batch_size': 100, # small
+            "optimizer": "adam", # ADAM
+            'metric': 'loss',
+            'loss': 'mse',
+            'n_splits': 3,
+            'GPU': 0
+        },
+    },
+    "dataset": {
+        "class": "DatasetH",
+        "module_path": "qlib.data.dataset",
+        "kwargs": {
+            "handler": {
+                "class": "Alpha158",
+                "module_path": "qlib.contrib.data.handler",
+                "kwargs": data_handler_config,
+            },
+            "segments": {
+                "train": ("2017-06-01", "2018-12-31"),
+                "valid": ("2019-01-01", "2019-06-30"),
+                "test": ("2019-07-01", "2020-09-01"),
+            },
+        },
+    },
+}
+
+# model initiaiton
+model = init_instance_by_config(task["model"])
+dataset = init_instance_by_config(task["dataset"])
+```
+
+
+
 ## :newspaper: **What's NEW!** &nbsp;   :sparkling_heart: 
 Recent released features
 | Feature | Status |
