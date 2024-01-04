@@ -7,6 +7,8 @@
 [![License](https://img.shields.io/pypi/l/pyqlib)](LICENSE)
 [![Join the chat at https://gitter.im/Microsoft/qlib](https://badges.gitter.im/Microsoft/qlib.svg)](https://gitter.im/Microsoft/qlib?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+## Check 'https://github.com/Wayne-wyyking888/qlib__ADARNN_modify/blob/main/(QLIB)ADARNN%E2%80%94%E2%80%94playground.ipynb' for a concrete implementation of AdaRNN model using Google Colab.
+
 # **Modification From Original Qlib**
 **Original Github link**: https://github.com/microsoft/qlib \
 **Documentation Qlib**: https://qlib.readthedocs.io/
