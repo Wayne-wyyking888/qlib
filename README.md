@@ -19,7 +19,7 @@
    
     For example, ``` kbar ```, **hard-code kbar features** (```"KMID2", "KSFT", "KLOW2"``` etc) and ``` rolling ```,  **rolling operator based features** (```"QTLU", "CORR", "VSTD", "VMA", "BETA"``` etc) can be specified by the users themselves. Note that the user must specify the corresponding ```windows``` (window length) for each type of features. 
 
-   And for some special model classes, such as ```ADARNN```, ```ALSTMN```, the window length must be set as the SAME across all features, but the window itself does not necessarily need to be the same (eg: for ```kbar```, the ```windows = [0,1,2,3,4]```, but for ``` rolling```, the ```windows = [5,15,20,30,50]```. However, for other model classes, such as ```XGBOOST```, ```LIGHTGBM```, both the window length and windows could be different for distinct types of features. 
+   And for some special model classes, such as ```ADARNN```, ```ALSTMN```, the window length must be set as the SAME across all features, but the window itself does not necessarily need to be the same (eg: for ```kbar```, the ```windows = [0,1,2,3,4]```, but for ```rolling```, the ```windows = [5,15,20,30,50]```. However, for other model classes, such as ```XGBOOST```, ```LIGHTGBM```, both the window length and windows could be different for distinct types of features. 
 
    One can check https://github.com/Wayne-wyyking888/qlib__ADARNN_modify/blob/main/qlib/contrib/data/handler.py and https://github.com/Wayne-wyyking888/qlib__ADARNN_modify/blob/main/qlib/contrib/model/pytorch_adarnn.py for detailed implementation.
 
@@ -49,7 +49,7 @@ data_handler_config = {
                               "RESI", "RSV", "CNTN", "SUMD", "VSUMD"]},
             #  # additional features to be used; must have the same window size
             # # MUST be a price object! (name will be, eg, OPEN_3_pure, 'pure' is for original feature without ratios)
-            'additional': {'windows': [i for i in range(60)],
+            'additional': {'windows': [i for i in range(40)],
                            'features': ["OPEN", "HIGH", "LOW", "CLOSE", 'VWAP']}
     },
     ##### ************************* #####
