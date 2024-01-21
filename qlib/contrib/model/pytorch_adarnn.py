@@ -287,8 +287,8 @@ class ADARNN(Model):
             self.log_metrics("train: ", train_metrics)
             self.log_metrics("valid: ", valid_metrics)
 
-            valid_score = valid_metrics[self.metric]
-            train_score = train_metrics[self.metric]
+            valid_score = -valid_metrics[self.metric]
+            train_score = -train_metrics[self.metric]
             evals_result["train"].append(train_score)
             evals_result["valid"].append(valid_score)
             if valid_score > best_score:
