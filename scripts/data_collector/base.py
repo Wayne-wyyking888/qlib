@@ -312,7 +312,8 @@ class Normalize:
         logger.info("normalize data......")
 
         with ProcessPoolExecutor(max_workers=self._max_workers) as worker:
-            file_list = list(self._source_dir.glob("*.csv"))
+            ## sorted version of .glob output
+            file_list = sorted(list(self._source_dir.glob("*.csv")))
             with tqdm(total=len(file_list)) as p_bar:
                 for _ in worker.map(self._executor, file_list):
                     p_bar.update()
