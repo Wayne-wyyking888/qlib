@@ -253,7 +253,12 @@ class ADARNN(Model):
         dataset: DatasetH,
         evals_result=dict(),
         save_path=None,
+        skip_fit=False,
     ):
+
+        if skip_fit: 
+            self.fitted = True
+            return 
         df_train, df_valid = dataset.prepare(
             ["train", "valid"],
             col_set=["feature", "label"],
